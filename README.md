@@ -55,4 +55,5 @@ Insight DevOps Engineering Project (Class 2018C)
 Work in progress. Currently using as a way to store notes that might be helpful when finally writing "Getting started" guide.
 
 - Setting environment vars for AWS (I should also add a placeholder in tfvars file)
+- Info about specifying bucket name
 - Create 'dev' terraform workspace: `terraform workspace new dev`

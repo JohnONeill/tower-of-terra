@@ -1,6 +1,6 @@
 ## IGW
 resource "aws_s3_bucket" "data_source_bucket" {
-  bucket = "insight-jo-data-source-bucket"
+  bucket = "${var.bucket_name}"
   acl = "private"
   tags {
     Name        = "Data source bucket"
