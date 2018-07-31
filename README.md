@@ -49,3 +49,10 @@ The goal of this project is to do a deep-dive into infrastructure testing with T
 1. [Open sourcing Terratest: a swiss army knife for testing infrastructure code](https://blog.gruntwork.io/open-sourcing-terratest-a-swiss-army-knife-for-testing-infrastructure-code-5d883336fcd5)
 ---
 Insight DevOps Engineering Project (Class 2018C)
+---
+
+# Getting started
+Work in progress. Currently using as a way to store notes that might be helpful when finally writing "Getting started" guide.
+
+- Setting environment vars for AWS (I should also add a placeholder in tfvars file)
+- Create 'dev' terraform workspace: `terraform workspace new dev`
