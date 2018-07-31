@@ -1,5 +1,5 @@
 ## AWS Instance
-resource "aws_instance" "example_instance" {
-  ami           = "ami-2757f631"
+resource "aws_instance" "single_instance" {
+  ami           = "ami-898dd9b9"
   instance_type = "t2.micro"
 }
