@@ -35,8 +35,15 @@ module "storage_s3" {
   vpc_id = "${module.vpc_network.vpc_id}"
 }
 
+module "security_group_network" {
+  source = "./modules/network/security_group"
+
+  vpc_id = "${module.vpc_network.vpc_id}"
+}
+
 module "instances" {
   source = "./modules/instances/"
 
-  vpc_id = "${module.vpc_network.vpc_id}"
+  vpc_security_group_ids = ["${module.security_group_network.cluster_sg_id}"]
+  subnet_id = "${module.subnet_network.public_subnet_id}"
 }

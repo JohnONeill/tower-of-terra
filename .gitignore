@@ -13,3 +13,6 @@
 
 # Crash log files
 crash.log
+
+# Cryptographic key-pairs for SSH-ing into instances
+*.pem
