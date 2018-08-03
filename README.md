@@ -1,6 +1,6 @@
 # ⚡ Tower of Terra ⚡
 
-Stress Testing Dynamic Scaling & Recovery with Terratest
+Stress Testing Kafka Scaling & Recovery with Terraform & Terratest
 
 ## Introduction
 
@@ -18,15 +18,20 @@ This is where a tool like [Terratest](https://github.com/gruntwork-io/terratest)
 
 The goal of this project is to do a deep-dive into infrastructure testing with Terratest by developing a data pipeline and a suite of stress tests that simulate automatic scaling and recovery scenarios.
 
+
+## Primary engineering challenges
+- Configuring Kafka to properly scale & recover
+- Establishing provisions and configurations to enable transient infrastructure — a requirement for transient infrastructure testing
+
 ## Data Pipeline
 
 - **S3** for storing [a large dataset](https://www.cms.gov/OpenPayments/Explore-the-Data/Dataset-Downloads.html). The focus here is to have a dataset that's large enough that it can be used to overwhelm our Kafka cluster. These datasets are managed by Centers for Medicare and Medicaid (CMS) and total roughly [2.2TB](https://www.resdac.org/resconnect/articles/195) (will likely take a subset of this).
 
 - **Node.js** scripts (our "producers") on **EC2** that read from **S3** and relay data to **Kafka**.
 
-- **Kakfa & Apache Zookeeper** on **EC2** for buffering data and serving to topic subscribers. [Might also need EBS? What is the alternative?]
+- **Kakfa & Apache Zookeeper** on **EC2** for buffering data and serving to topic subscribers.
 
-- **Node.js** scripts (our "consumers") on **EC2** that store data in a database. [Any reason to have something more complicated like Spark?]
+- **Node.js** scripts (our "consumers") on **EC2** that store data in a database.
 
 - **Cassandra** for storing data from consumers.
 
