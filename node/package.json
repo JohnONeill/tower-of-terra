@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "get-csv": "^3.0.3",
     "kafka-node": "^2.6.1",
+    "lodash": "^4.17.10",
     "uuid": "^3.3.2"
   }
 }

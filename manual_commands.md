@@ -54,9 +54,9 @@ sudo apt-get install -y nodejs
 
 ### scp node stuff
 ### exclude node_modules!
-scp -rv -i ~/.ssh/john-oneill-IAM-keypair.pem node/package.json ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com:~/node
-scp -rv -i ~/.ssh/john-oneill-IAM-keypair.pem node/index.js ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com:~/node
-scp -rv -i ~/.ssh/john-oneill-IAM-keypair.pem node/producer.js ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com:~/node
+scp -r -i ~/.ssh/john-oneill-IAM-keypair.pem node/package.json ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com:~/node
+scp -r -i ~/.ssh/john-oneill-IAM-keypair.pem node/index.js ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com:~/node
+scp -r -i ~/.ssh/john-oneill-IAM-keypair.pem node/producer.js ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com:~/node
 
 ### sshed in
 sudo apt-get update

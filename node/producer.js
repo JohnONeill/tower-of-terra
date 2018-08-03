@@ -1,5 +1,7 @@
 const kafka = require("kafka-node");
 const uuid = require("uuid");
+const getCSV = require("get-csv");
+const _ = require("lodash");
 
 const client = new kafka.Client("localhost:2181", "my-client-id", {
   sessionTimeout: 300,
@@ -11,18 +13,19 @@ const producer = new kafka.HighLevelProducer(client);
 producer.on("ready", () => {
   console.log("Kafka Producer is connected and ready.");
 
-  for (var i = 0; i < 100; i++) {
-    console.log('here! (' + i + ')');
-    KafkaService.sendRecord({
-      type: 'sample_type',
-      userId: 'sample_user_id',
-      sessionId: 'sample_session_id',
-      data: 'sample_data'
-    },
-    (result) => {
-      console.log('sent!', result);
+  console.log('getting csv');
+  getCSV('https://s3-us-west-2.amazonaws.com/insight-jo-data-source-bucket/US.7180009.csv')
+    .then((rows) => {
+      var num_rows = rows.length;
+      console.log(num_rows);
+      for (var i = 0; i < 10; i++) {
+        KafkaService.sendRecord(
+        rows[i],
+        (result) => {
+          console.log('sent!', result);
+        });
+      }
     });
-  }
 });
 
 // For this demo we just log producer errors to the console.
@@ -31,19 +34,15 @@ producer.on("error", function(error) {
 });
 
 const KafkaService = {
-  sendRecord: ({ type, userId, sessionId, data }, callback = () => {}) => {
-    if (!userId) {
-      return callback(new Error(`A userId must be provided.`));
-    }
+  sendRecord: (row, callback = () => {}) => {
 
-    const event = {
-      id: uuid.v4(),
-      timestamp: Date.now(),
-      userId: userId,
-      sessionId: sessionId,
-      type: type,
-      data: data
-    };
+    const event = _.merge(
+      {
+        id: uuid.v4(),
+        timestamp: Date.now(),
+      },
+      row
+    );
 
     const buffer = new Buffer.from(JSON.stringify(event));
 
