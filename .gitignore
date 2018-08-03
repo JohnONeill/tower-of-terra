@@ -17,5 +17,11 @@ crash.log
 # Cryptographic key-pairs for SSH-ing into instances
 *.pem
 
-manual_commands.md
+# Side notes
 challenges.md
+
+# Node
+*node_modules
+
+# Temporary
+kafka

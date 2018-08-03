@@ -1,0 +1,16 @@
+{
+  "name": "tower-of-terra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kafka-node": "^2.6.1",
+    "uuid": "^3.3.2"
+  }
+}
