@@ -44,6 +44,7 @@ module "security_group_network" {
 module "instances" {
   source = "./modules/instances/"
 
-  vpc_security_group_ids = ["${module.security_group_network.cluster_sg_id}"]
+  zookeeper_vpc_security_group_ids = ["${module.security_group_network.zookeeper_sg_id}"]
   subnet_id = "${module.subnet_network.public_subnet_id}"
+  aws_ami = "${var.aws_ami}"
 }

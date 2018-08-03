@@ -16,3 +16,6 @@ crash.log
 
 # Cryptographic key-pairs for SSH-ing into instances
 *.pem
+
+manual_commands.md
+challenges.md
