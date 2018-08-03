@@ -8,8 +8,21 @@ const client = new kafka.Client("localhost:2181", "my-client-id", {
 });
 
 const producer = new kafka.HighLevelProducer(client);
-producer.on("ready", function() {
+producer.on("ready", () => {
   console.log("Kafka Producer is connected and ready.");
+
+  for (var i = 0; i < 100; i++) {
+    console.log('here! (' + i + ')');
+    KafkaService.sendRecord({
+      type: 'sample_type',
+      userId: 'sample_user_id',
+      sessionId: 'sample_session_id',
+      data: 'sample_data'
+    },
+    (result) => {
+      console.log('sent!', result);
+    });
+  }
 });
 
 // For this demo we just log producer errors to the console.
@@ -37,7 +50,7 @@ const KafkaService = {
     // Create a new payload
     const record = [
       {
-          topic: "my-replicated-topic",
+          topic: "my-sample-topic",
           messages: buffer,
           attributes: 1 /* Use GZip compression for the payload */
       }
@@ -48,4 +61,4 @@ const KafkaService = {
   }
 };
 
-module.exports.Kafka = KafkaService;
+module.exports.KafkaService = KafkaService;
