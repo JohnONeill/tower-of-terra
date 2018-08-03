@@ -22,6 +22,7 @@ The goal of this project is to do a deep-dive into infrastructure testing with T
 ## Primary engineering challenges
 - Configuring Kafka to properly scale & recover
 - Establishing provisions and configurations to enable transient infrastructure — a requirement for transient infrastructure testing
+- Testing suite that facilitates various stress tests
 
 ## Data Pipeline
 
