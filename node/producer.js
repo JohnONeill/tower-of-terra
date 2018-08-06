@@ -21,7 +21,7 @@ producer.on("ready", () => {
       for (var i = 0; i < 10; i++) {
         KafkaService.sendRecord(
         rows[i],
-        (result) => {
+        (err, result) => {
           console.log('sent!', result);
         });
       }

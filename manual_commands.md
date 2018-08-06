@@ -74,3 +74,9 @@ sudo chmod -x /etc/update-motd.d/*
 silence login:
 touch .hushlogin
 (didn't seem to actually help)
+
+
+# ansible
+
+# local
+mkdir -p /etc/ansible/hosts
