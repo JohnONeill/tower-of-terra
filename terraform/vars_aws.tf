@@ -5,5 +5,5 @@ variable "aws_region" {
 }
 
 variable "aws_ami" {
-  default = "ami-898dd9b9"
+  default = "ami-0d50a275"
 }

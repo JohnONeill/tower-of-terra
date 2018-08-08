@@ -1,8 +1,8 @@
 (things to automate!)
 
-ec2-34-212-3-75.us-west-2.compute.amazonaws.com
+ec2-54-218-33-175.us-west-2.compute.amazonaws.com
 
-ssh -v -i ~/.ssh/john-oneill-IAM-keypair.pem ubuntu@ec2-34-212-3-75.us-west-2.compute.amazonaws.com
+ssh -v -i ~/.ssh/john-oneill-IAM-keypair.pem ubuntu@ec2-54-218-33-175.us-west-2.compute.amazonaws.com
 
 # Kafka!
 
@@ -80,3 +80,7 @@ touch .hushlogin
 
 # local
 mkdir -p /etc/ansible/hosts
+
+
+# configurator
+- add path to configurator into .bash_profile

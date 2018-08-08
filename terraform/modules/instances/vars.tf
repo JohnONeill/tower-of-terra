@@ -2,11 +2,6 @@ variable "aws_ami" {
   description = "AWS ami"
 }
 
-variable "zookeeper_vpc_security_group_ids" {
-  type = "list"
-  description = "Security groups for Zookeeper cluster"
-}
-
 variable "subnet_id" {
   description = "Subnet ID"
 }
@@ -25,4 +20,8 @@ variable "zookeeper_instance_type" {
 
 variable "kafka_instance_type" {
   default = "t2.small"
+}
+
+variable "open_security_group" {
+  default = "Open security group"
 }

@@ -15,6 +15,7 @@ variable "vpc_cidr_prefix" {
 variable "public_rt_id" {
   description = "ID of the Public Route Table"
 }
+
 variable "private_rt_id" {
   description = "ID of the Private Route Table"
 }

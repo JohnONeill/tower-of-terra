@@ -35,7 +35,7 @@ module "storage_s3" {
   vpc_id = "${module.vpc_network.vpc_id}"
 }
 
-module "security_group_network" {
+module "security_group" {
   source = "./modules/network/security_group"
 
   vpc_id = "${module.vpc_network.vpc_id}"
@@ -44,7 +44,47 @@ module "security_group_network" {
 module "instances" {
   source = "./modules/instances/"
 
-  zookeeper_vpc_security_group_ids = ["${module.security_group_network.zookeeper_sg_id}"]
-  subnet_id = "${module.subnet_network.public_subnet_id}"
   aws_ami = "${var.aws_ami}"
+  subnet_id = "${module.subnet_network.public_subnet_id}"
+  open_security_group = "${module.security_group.open_security_group_id}"
+}
+
+resource "null_resource" "zookeeper_cluster" {
+
+  # Make sure we can actually ssh into nodes
+  provisioner "local-exec" {
+    command = "sh ${path.module}/../configuration/waitforssh.sh ${module.instances.zookeeper_master_public_dns_name}"
+  }
+
+  provisioner "local-exec" {
+    command = "sh ${path.module}/../configuration/waitforssh.sh ${module.instances.zookeeper_workers_public_dns_names}"
+  }
+
+  # Enables passwordless SSH from local to the MASTER and the MASTER to all the WORKERS
+  provisioner "local-exec" {
+    command = "configurator install ssh ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
+  }
+
+  # Enables passwordless SSH from local to the MASTER and the MASTER to all the WORKERS
+  provisioner "local-exec" {
+    command = "configurator install ssh ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
+  }
+
+  # Places AWS keys onto all machines under ~/.profile
+  provisioner "local-exec" {
+    command = "configurator install aws ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
+  }
+
+  # Installs basic packages for Python, Java, etc.
+  provisioner "local-exec" {
+    command = "configurator install environment ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
+  }
+
+  provisioner "local-exec" {
+    command = "configurator install zookeeper ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
+  }
+
+  provisioner "local-exec" {
+    command = "configurator service start zookeeper ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names}"
+  }
 }

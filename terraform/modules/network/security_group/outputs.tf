@@ -1,4 +1,4 @@
-output "zookeeper_sg_id" {
-  description = "Zookeeper-specific security group id"
-  value = "${aws_security_group.zookeeper.id}"
+output "open_security_group_id" {
+  description = "Open all security group id"
+  value = "${module.open_all_sg.this_security_group_id}"
 }
