@@ -49,4 +49,5 @@ module "instances" {
   open_security_group = "${module.security_group.open_security_group_id}"
   pem_file_path = "${var.pem_file_path}"
   public_subnet_id = "${module.subnet_network.public_subnet_id}"
+  remote_download_path = "${var.remote_download_path}"
 }

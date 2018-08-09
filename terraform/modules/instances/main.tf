@@ -1,5 +1,5 @@
 resource "aws_instance" "zookeeper" {
-  count = 3
+  count = "${lookup(var.instance_counts, "zookeeper")}"
   ami = "${lookup(var.amis, "zookeeper")}"
   instance_type = "${lookup(var.aws_instance_types, "zookeeper")}"
   key_name = "john-oneill-IAM-keypair"
@@ -21,15 +21,48 @@ resource "aws_instance" "zookeeper" {
     Cluster     = "zookeepers"
     Role        = "master"
   }
+}
 
+#
+# @TODO: move to own module
+#
+resource "aws_eip" "elastic_ip" {
+  count = "${lookup(var.instance_counts, "zookeeper")}"
+  instance = "${element(aws_instance.zookeeper.*.id, count.index)}"
+
+  # Ensure that we can ssh in
   connection {
-    type     = "ssh"
-    user     = "ubuntu"
+    type = "ssh"
+    user = "ubuntu"
     private_key = "${file("${var.pem_file_path}")}"
+    host = "${self.public_ip}"
   }
 
-  # Copy zookeeper setup script to remote and execute
+  # Copy configuration file over to instance
+  provisioner "file" {
+    source      = "${path.module}/../../../packer/remote_config_scripts/configure_and_run_zookeeper.sh"
+    destination = "/tmp/configure_and_run_zookeeper.sh"
+  }
+
+  # Create utils/shell folder
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "mkdir /tmp/utils",
+  #   ]
+  # }
+
+  # Copy over shell utils
+  # provisioner "file" {
+  #   source      = "${path.module}/../../../utils/shell"
+  #   destination = "/tmp/utils"
+  # }
+
+  # Take configuration file and run with params
+  # Use EIP count as proxy for Zookeeper instance count
   provisioner "remote-exec" {
-    script = "${path.module}/../../../packer/remote_config_scripts/configure_and_run_zookeeper.sh"
+    inline = [
+      "chmod +x /tmp/configure_and_run_zookeeper.sh",
+      "/tmp/configure_and_run_zookeeper.sh ${var.remote_download_path} ${count.index} ${self.public_ip}",
+    ]
   }
 }

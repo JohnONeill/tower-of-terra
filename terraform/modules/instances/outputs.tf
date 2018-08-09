@@ -1,4 +1,4 @@
-output "zookeeper_public_dns_names" {
-  description = "Public DNS name(s) of Zookeeper instance(s)"
-  value = "${aws_instance.zookeeper.*.public_dns}"
+output "elastic_ips_zookeeper" {
+  description = "Elastic IPs of Zookeeper instance(s)"
+  value = "${aws_eip.elastic_ip.*.public_ip}"
 }
