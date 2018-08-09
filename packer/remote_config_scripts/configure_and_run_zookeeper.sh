@@ -14,6 +14,8 @@ sudo cp $ZOOKEEPER_HOME/conf/zoo_sample.cfg $ZOOKEEPER_HOME/conf/zoo.cfg
 sudo sed -i 's@/tmp/zookeeper@/var/lib/zookeeper@g' $ZOOKEEPER_HOME/conf/zoo.cfg
 
 # Writing all DNS values of all Zookeeper instances
+# 2888 port is for ZK server to connect followers to leaders
+# 3888 port is necessary because default leader election also uses TCP
 SERVER_INDEX=0
 for DNS in $(echo $DNS_LIST | sed "s/,/ /g")
 do
