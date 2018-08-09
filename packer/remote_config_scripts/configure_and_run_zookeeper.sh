@@ -26,6 +26,6 @@ echo 'echo '"$ZOOKEEPER_ID"' >> /var/lib/zookeeper/myid' | sudo -s
 # Run zookeeper
 echo "Running Zookeeper..."
 # . ~/.profile; zkServer.sh start
-sudo $ZOOKEEPER_HOME/zkServer.sh start
+sudo $ZOOKEEPER_HOME/bin/zkServer.sh start
 
 echo "Zookeeper is up and running!"
