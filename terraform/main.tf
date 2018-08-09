@@ -44,47 +44,9 @@ module "security_group" {
 module "instances" {
   source = "./modules/instances/"
 
-  aws_ami = "${var.aws_ami}"
-  subnet_id = "${module.subnet_network.public_subnet_id}"
+  amis = "${var.amis}"
+  aws_instance_types = "${var.aws_instance_types}"
   open_security_group = "${module.security_group.open_security_group_id}"
-}
-
-resource "null_resource" "zookeeper_cluster" {
-
-  # Make sure we can actually ssh into nodes
-  provisioner "local-exec" {
-    command = "sh ${path.module}/../configuration/waitforssh.sh ${module.instances.zookeeper_master_public_dns_name}"
-  }
-
-  provisioner "local-exec" {
-    command = "sh ${path.module}/../configuration/waitforssh.sh ${module.instances.zookeeper_workers_public_dns_names}"
-  }
-
-  # Enables passwordless SSH from local to the MASTER and the MASTER to all the WORKERS
-  provisioner "local-exec" {
-    command = "configurator install ssh ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
-  }
-
-  # Enables passwordless SSH from local to the MASTER and the MASTER to all the WORKERS
-  provisioner "local-exec" {
-    command = "configurator install ssh ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
-  }
-
-  # Places AWS keys onto all machines under ~/.profile
-  provisioner "local-exec" {
-    command = "configurator install aws ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
-  }
-
-  # Installs basic packages for Python, Java, etc.
-  provisioner "local-exec" {
-    command = "configurator install environment ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
-  }
-
-  provisioner "local-exec" {
-    command = "configurator install zookeeper ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names} ${module.instances.zookeeper_master_private_dns_name} ${module.instances.zookeeper_workers_private_dns_names}"
-  }
-
-  provisioner "local-exec" {
-    command = "configurator service start zookeeper ${module.instances.zookeeper_master_public_dns_name} ${module.instances.zookeeper_workers_public_dns_names}"
-  }
+  pem_file_path = "${var.pem_file_path}"
+  public_subnet_id = "${module.subnet_network.public_subnet_id}"
 }

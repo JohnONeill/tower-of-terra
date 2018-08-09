@@ -22,3 +22,9 @@ challenges.md
 
 # Node
 *node_modules
+
+# Packer logs
+/packer/logs*
+
+# Keep log folder itself
+!/packer/logs
