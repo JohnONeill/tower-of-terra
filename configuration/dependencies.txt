@@ -1,3 +1,0 @@
-kafka: zookeeper
-kafka-manager: zookeeper,kafka
-zookeeper:
