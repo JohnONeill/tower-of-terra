@@ -41,7 +41,7 @@ resource "null_resource" "configure_elastic_ip" {
 
   # Copy configuration file over to instance
   provisioner "file" {
-    source      = "${path.module}/../../../packer/remote_config_scripts/configure_and_run_zookeeper.sh"
+    source      = "${path.module}/../../remote_config_scripts/configure_and_run_zookeeper.sh"
     destination = "/tmp/configure_and_run_zookeeper.sh"
   }
 
