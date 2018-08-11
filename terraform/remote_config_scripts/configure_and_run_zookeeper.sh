@@ -34,3 +34,13 @@ echo "Running Zookeeper..."
 sudo $ZOOKEEPER_HOME/bin/zkServer.sh start
 
 echo "Zookeeper is up and running!"
+
+# # @TODO: Share these values with packer creation script
+# KAFKA_SCALA_VER=2.12
+# KAFKA_VER=1.1.0
+# cd kafka_${KAFKA_SCALA_VER}-${KAFKA_VER}
+#
+# echo "Creating topic..."
+# bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 5 --topic stressed-out-topic
+#
+# echo "Topic created!"

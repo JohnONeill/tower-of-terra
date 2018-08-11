@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "pwd": "{{ env pwd }}",
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_region": "us-west-2",
+    "aws_ami_image": "ami-ba602bc2",
+    "aws_instance_type": "t2.micro",
+    "image_version": "6.0",
+    "remote_download_path": "~/downloads",
+    "remote_prep_kafka_filename": "kafka.sh"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_region`}}",
+    "source_ami": "{{user `aws_ami_image`}}",
+    "instance_type": "{{user `aws_instance_type`}}",
+    "ssh_username": "ubuntu",
+    "ami_name": "jo-kafka-{{user `image_version`}}"
+  }],
+  "provisioners": [
+    {
+        "type": "file",
+        "source": "{{template_dir}}/../image_creation_scripts/{{user `remote_prep_kafka_filename`}}",
+        "destination": "/tmp/{{user `remote_prep_kafka_filename`}}"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "chmod u+x /tmp/{{user `remote_prep_kafka_filename`}}",
+        "/tmp/{{user `remote_prep_kafka_filename`}} {{user `remote_download_path`}}"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "{{template_dir}}/../../kafka",
+      "destination": "/tmp/kafka"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "chmod u+x /tmp/kafka",
+        "mv /tmp/kafka {{user `remote_download_path`}}"
+      ]
+    }
+  ]
+}

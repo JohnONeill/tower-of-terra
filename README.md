@@ -66,4 +66,8 @@ Work in progress. Currently using as a way to store notes that might be helpful 
 
 - Setting environment vars for AWS (I should also add a placeholder in tfvars file)
 - Info about specifying bucket name
-- Create 'dev' terraform workspace: `terraform workspace new dev`
+- Create 'dev' terraform workspace: `terraform workspace new dev` (still need?)
+
+- Install terraform
+- Install packer
+- If building new images via Packer, remember to update terraform var with new AMI ID

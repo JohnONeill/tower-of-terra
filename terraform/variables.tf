@@ -8,7 +8,7 @@ variable "amis" {
   description = "Machine image files"
   type = "map"
   default = {
-    zookeeper = "ami-07ba83c3895c0e952"
+    zookeeper = "ami-09482b0ca17941772"
   }
 }
 

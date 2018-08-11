@@ -54,3 +54,53 @@ resource "null_resource" "configure_elastic_ip" {
     ]
   }
 }
+
+# Useful for doing "dry-runs" before specifying packer commands
+resource "aws_instance" "test" {
+  ami = "${lookup(var.amis, "zookeeper")}"
+  instance_type = "t2.small"
+  key_name = "john-oneill-IAM-keypair"
+
+  vpc_security_group_ids = ["${var.open_security_group}"]
+  subnet_id = "${var.public_subnet_id}"
+  associate_public_ip_address = true
+
+  root_block_device {
+    volume_size = 100
+    volume_type = "standard"
+  }
+
+  tags {
+    Name        = "test_server"
+    Owner       = "john-oneill"
+    Environment = "dev"
+    Terraform   = "true"
+  }
+
+}
+
+resource "null_resource" "test_instance_ip" {
+
+  # Ensure that we can ssh in
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = "${file("${var.pem_file_path}")}"
+    host = "${aws_instance.test.public_ip}"
+  }
+
+  # Copy configuration file over to instance
+  provisioner "file" {
+    source      = "${path.module}/../../remote_config_scripts/configure_and_run_zookeeper.sh"
+    destination = "/tmp/configure_and_run_zookeeper.sh"
+  }
+
+  # Take configuration file and run with params
+  # Use EIP count as proxy for Zookeeper instance count
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/configure_and_run_zookeeper.sh",
+      "/tmp/configure_and_run_zookeeper.sh 1 1 ${aws_instance.test.public_ip} ${var.remote_download_path}",
+    ]
+  }
+}
