@@ -1,17 +1,7 @@
 ZOOKEEPER_CLUSTER_COUNT=$1
 ZOOKEEPER_ID=$2
 DNS_LIST=$3
-# @TODO: pass down zookeeper name as well
-# @TODO: not 100% sure why these indexes are off by one
-#        (running locally vs via terraform provisioner)
 ZOOKEEPER_HOME="$4/zookeeper-3.4.13"
-
-# Copy sample configuration into normal position
-# @TODO: why do these need to be sudo?
-# echo "${color_magenta}Setting and adjusting zoo config file...${color_norm}"
-echo "Setting and adjusting Zookeeper configuration..."
-sudo cp $ZOOKEEPER_HOME/conf/zoo_sample.cfg $ZOOKEEPER_HOME/conf/zoo.cfg
-sudo sed -i 's@/tmp/zookeeper@/var/lib/zookeeper@g' $ZOOKEEPER_HOME/conf/zoo.cfg
 
 # Writing all DNS values of all Zookeeper instances
 # 2888 port is for ZK server to connect followers to leaders
@@ -29,18 +19,8 @@ sudo touch /var/lib/zookeeper/myid
 echo 'echo '"$ZOOKEEPER_ID"' >> /var/lib/zookeeper/myid' | sudo -s
 
 # Run zookeeper
-echo "Running Zookeeper..."
-# . ~/.profile; zkServer.sh start
+echo "Starting Zookeeper..."
+# sudo nohup $ZOOKEEPER_HOME/bin/zkServer.sh start &
 sudo $ZOOKEEPER_HOME/bin/zkServer.sh start
 
 echo "Zookeeper is up and running!"
-
-# # @TODO: Share these values with packer creation script
-# KAFKA_SCALA_VER=2.12
-# KAFKA_VER=1.1.0
-# cd kafka_${KAFKA_SCALA_VER}-${KAFKA_VER}
-#
-# echo "Creating topic..."
-# bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 5 --topic stressed-out-topic
-#
-# echo "Topic created!"
