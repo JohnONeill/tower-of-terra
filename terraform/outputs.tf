@@ -1,6 +1,11 @@
-output "elastic_ips_zookeeper" {
+output "zookeeper_elastic_ips" {
   description = "Elastic IPs of Zookeeper instance(s)"
-  value = "${module.instances.elastic_ips_zookeeper}"
+  value = "${module.instances.zookeeper_elastic_ips}"
+}
+
+output "kafka_elastic_ips" {
+  description = "Elastic IPs of Kafka broker instance(s)"
+  value = "${module.instances.kafka_broker_elastic_ips}"
 }
 
 output "test_instance_ip" {

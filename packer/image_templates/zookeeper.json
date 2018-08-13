@@ -6,7 +6,7 @@
     "aws_region": "us-west-2",
     "aws_ami_image": "ami-ba602bc2",
     "aws_instance_type": "t2.micro",
-    "image_version": "9.0",
+    "image_version": "12.0",
     "remote_download_path": "~/downloads",
     "remote_prep_zookeeper_filename": "zookeeper.sh"
   },

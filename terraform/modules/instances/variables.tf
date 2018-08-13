@@ -11,7 +11,8 @@ variable "aws_instance_types" {
 variable "instance_counts" {
   type = "map"
   default = {
-    zookeeper = 3
+    zookeeper = 3,
+    kafka = 3
   }
 }
 

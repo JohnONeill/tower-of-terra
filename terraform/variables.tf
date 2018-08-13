@@ -8,7 +8,8 @@ variable "amis" {
   description = "Machine image files"
   type = "map"
   default = {
-    zookeeper = "ami-09482b0ca17941772"
+    zookeeper = "ami-0a2cb2967c8730af1",
+    kafka = "ami-04c00f29d32c65dc2"
   }
 }
 
@@ -16,7 +17,8 @@ variable "aws_instance_types" {
   description = "AWS instance types"
   type = "map"
   default = {
-    zookeeper = "t2.micro"
+    zookeeper = "t2.small",
+    kafka = "t2.medium"
   }
 }
 

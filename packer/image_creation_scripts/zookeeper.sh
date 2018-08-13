@@ -2,7 +2,7 @@
 
 # Update package manager and get tree package
 sudo apt-get update
-sudo apt-get install -y tree openjdk-8-jdk
+sudo apt-get install -y tree openjdk-8-jdk bc
 
 # Setup a download and installation directory
 # NOTE: changes here should be reflected in variables to Terraform
@@ -31,5 +31,5 @@ sudo sed -i 's@/tmp/zookeeper@/var/lib/zookeeper@g' $ZOOKEEPER_HOME/conf/zoo.cfg
 
 # Set max client count
 echo "Setting max client count..."
-sudo sed -i '20d' $ZOOKEEPER_HOME/conf/zoo.cfg
-sudo sed -i '20i maxClientCnxns=60' $ZOOKEEPER_HOME/conf/zoo.cfg
+sudo sed -i '17d' $ZOOKEEPER_HOME/conf/zoo.cfg
+sudo sed -i '17i maxClientCnxns=60' $ZOOKEEPER_HOME/conf/zoo.cfg
