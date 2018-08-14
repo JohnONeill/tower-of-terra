@@ -9,7 +9,7 @@ variable "amis" {
   type = "map"
   default = {
     zookeeper = "ami-0a2cb2967c8730af1",
-    kafka = "ami-04c00f29d32c65dc2"
+    kafka = "ami-0361b3924eb51d6ba"
   }
 }
 

@@ -27,8 +27,8 @@ sudo sed -i '60d' $SERVER_PROPERTIES
 sudo sed -i '60i log.dir=/var/lib/kafka/event-log' $SERVER_PROPERTIES
 
 ## Set number of partitions
-sudo sed -i '64d' $SERVER_PROPERTIES
-sudo sed -i '64i num.partitions=3' $SERVER_PROPERTIES
+sudo sed -i '65d' $SERVER_PROPERTIES
+sudo sed -i '65i num.partitions=3' $SERVER_PROPERTIES
 
 # Set replication factor to three
 sudo sed -i '74d' $SERVER_PROPERTIES

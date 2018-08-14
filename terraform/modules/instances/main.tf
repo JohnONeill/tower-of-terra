@@ -59,6 +59,34 @@ resource "null_resource" "configure_zookeeper_elastic_ip" {
   }
 }
 
+# Null resource to conduct rolling deploy of zookeeper instances once
+# all instances have been deployed
+resource "null_resource" "rolling_deploy_of_zookeeper_instances" {
+  depends_on = ["null_resource.configure_zookeeper_elastic_ip"]
+
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = "${file("${var.pem_file_path}")}"
+    host = "${aws_eip.zookeeper_elastic_ip.0.public_ip}"
+  }
+
+  # Copy configuration file over to instance
+  provisioner "file" {
+    source      = "${path.module}/../../remote_config_scripts/deploy_zookeeper_instances.sh"
+    destination = "/tmp/deploy_zookeeper_instances.sh"
+  }
+
+  # Take configuration file and run with params
+  # Use EIP count as proxy for Zookeeper instance count
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/deploy_zookeeper_instances.sh",
+      "/tmp/deploy_zookeeper_instances.sh ${lookup(var.instance_counts, "zookeeper")} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
+    ]
+  }
+}
+
 ##################
 # Kafka instances
 ##################
@@ -93,6 +121,9 @@ resource "aws_eip" "kafka_elastic_ip" {
 }
 
 resource "null_resource" "configure_kafka_elastic_ip" {
+  # Zookeeper instances should be deployed first
+  depends_on = ["null_resource.rolling_deploy_of_zookeeper_instances"]
+
   count = "${lookup(var.instance_counts, "kafka")}"
 
   # Ensure that we can ssh in
@@ -115,7 +146,7 @@ resource "null_resource" "configure_kafka_elastic_ip" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/configure_and_run_kafka_broker.sh",
-      "/tmp/configure_and_run_kafka_broker.sh ${lookup(var.instance_counts, "kafka")} ${count.index} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
+      "/tmp/configure_and_run_kafka_broker.sh ${lookup(var.instance_counts, "kafka")} ${count.index} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path} ${element(aws_eip.kafka_elastic_ip.*.public_ip, count.index)}",
     ]
   }
 }
