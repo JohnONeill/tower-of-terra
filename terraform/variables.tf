@@ -9,7 +9,8 @@ variable "amis" {
   type = "map"
   default = {
     zookeeper = "ami-0a2cb2967c8730af1",
-    kafka = "ami-0361b3924eb51d6ba"
+    kafka = "ami-0361b3924eb51d6ba",
+    sangrenel = "ami-097cf91ff67813094"
   }
 }
 
@@ -18,7 +19,8 @@ variable "aws_instance_types" {
   type = "map"
   default = {
     zookeeper = "t2.small",
-    kafka = "t2.medium"
+    kafka = "t2.medium",
+    sangrenel = "t2.medium"
   }
 }
 

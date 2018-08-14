@@ -100,8 +100,10 @@ resource "aws_instance" "kafka_broker" {
   subnet_id = "${var.public_subnet_id}"
   associate_public_ip_address = true
 
+  # Creating kafka brokers with small EBS storage in order to
+  # simplify scaling demo (and be conscious of costs)
   root_block_device {
-    volume_size = 100
+    volume_size = 15
     volume_type = "standard"
   }
 
@@ -148,6 +150,34 @@ resource "null_resource" "configure_kafka_elastic_ip" {
       "chmod +x /tmp/configure_and_run_kafka_broker.sh",
       "/tmp/configure_and_run_kafka_broker.sh ${lookup(var.instance_counts, "kafka")} ${count.index} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path} ${element(aws_eip.kafka_elastic_ip.*.public_ip, count.index)}",
     ]
+  }
+}
+
+##################
+# Sengrel instance
+##################
+resource "aws_instance" "sangrenel" {
+  # Should change
+  ami = "${lookup(var.amis, "sangrenel")}"
+  instance_type = "${lookup(var.aws_instance_types, "sangrenel")}"
+  key_name = "john-oneill-IAM-keypair"
+
+  vpc_security_group_ids = ["${var.open_security_group}"]
+  subnet_id = "${var.public_subnet_id}"
+  associate_public_ip_address = true
+
+  root_block_device {
+    volume_size = 100
+    volume_type = "standard"
+  }
+
+  tags {
+    Name        = "sangrenel"
+    Owner       = "john-oneill"
+    Environment = "dev"
+    Terraform   = "true"
+    Cluster     = "sangrenel"
+    Role        = "master"
   }
 }
 
