@@ -100,10 +100,8 @@ resource "aws_instance" "kafka_broker" {
   subnet_id = "${var.public_subnet_id}"
   associate_public_ip_address = true
 
-  # Creating kafka brokers with small EBS storage in order to
-  # simplify scaling demo (and be conscious of costs)
   root_block_device {
-    volume_size = 15
+    volume_size = 100
     volume_type = "standard"
   }
 
