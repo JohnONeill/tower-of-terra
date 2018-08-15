@@ -3,6 +3,7 @@ package test
 import (
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,8 +15,6 @@ func TestCanCreateVPC(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
 		TerraformDir: "../../terraform/modules/network/vpc",
-
-		NoColor: true,
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
@@ -27,6 +26,8 @@ func TestCanCreateVPC(t *testing.T) {
 	// Run `terraform output` to get the value of an output variable
 	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
 
+	logger.Log(t, "Checking that VPC ID begins with `vpc-`...")
+
 	// Verify we're getting back the variable we expect
-	assert.NotNil(t, vpcID)
+	assert.Regexp(t, "^vpc-.*", vpcID)
 }
