@@ -29,12 +29,6 @@ module "subnet_network" {
   private_rt_id = "${module.route_table_network.private_rt_id}"
 }
 
-module "storage_s3" {
-  source = "./modules/storage/s3/"
-
-  vpc_id = "${module.vpc_network.vpc_id}"
-}
-
 module "security_group" {
   source = "./modules/network/security_group"
 
