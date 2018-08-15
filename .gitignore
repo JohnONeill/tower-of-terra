@@ -25,3 +25,8 @@ challenges.md
 
 # Packer logs
 packer/logs/*
+
+# Go vendor packages
+# To install, run `dep ensure`
+# https://github.com/golang/dep/blob/master/docs/FAQ.md#should-i-commit-my-vendor-directory
+terratest/vendor

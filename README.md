@@ -71,3 +71,5 @@ Work in progress. Currently using as a way to store notes that might be helpful 
 - Install terraform
 - Install packer
 - If building new images via Packer, remember to update terraform var with new AMI ID
+- Install go & dep for terratest (would ideally run terratest from testing server as part of CI/CD pipeline) (or instead: go get github.com/gruntwork-io/terratest/modules/terraform)
+- Place project within $GOPATH
