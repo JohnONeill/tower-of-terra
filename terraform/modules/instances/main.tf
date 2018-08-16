@@ -23,7 +23,6 @@ resource "aws_instance" "zookeeper" {
     Environment = "dev"
     Terraform   = "true"
     Cluster     = "zookeepers"
-    Role        = "master"
   }
 }
 
@@ -111,7 +110,6 @@ resource "aws_instance" "kafka_broker" {
     Environment = "dev"
     Terraform   = "true"
     Cluster     = "kafka-brokers"
-    Role        = "master"
   }
 }
 
