@@ -44,4 +44,8 @@ module "instances" {
   pem_file_path = "${var.pem_file_path}"
   public_subnet_id = "${module.subnet_network.public_subnet_id}"
   remote_download_path = "${var.remote_download_path}"
+  sangrenel_flag_auto_launch_test = "${var.sangrenel_flag_auto_launch_test}"
+  sangrenel_flag_message_size = "${var.sangrenel_flag_message_size}"
+  sangrenel_flag_batch_size = "${var.sangrenel_flag_batch_size}"
+  sangrenel_flag_num_workers = "${var.sangrenel_flag_num_workers}"
 }

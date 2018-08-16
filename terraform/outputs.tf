@@ -8,9 +8,9 @@ output "kafka_elastic_ips" {
   value = "${module.instances.kafka_broker_elastic_ips}"
 }
 
-output "ssangrenel_ip" {
-  description = "IP of Sangrenel instance"
-  value = "${module.instances.sangrenel_ip}"
+output "sangrenel_ips" {
+  description = "IP of Sangrenel instance(s)"
+  value = "${module.instances.sangrenel_ips}"
 }
 
 output "test_instance_ip" {

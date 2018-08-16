@@ -1,4 +1,6 @@
-# AWS Region
+################
+# AWS specifics
+################
 variable "aws_region" {
   description = "AWS region to launch servers"
   default = "us-west-2"
@@ -22,6 +24,30 @@ variable "aws_instance_types" {
     kafka = "t2.medium",
     sangrenel = "t2.medium"
   }
+}
+
+#####################
+# Sangrenel settings
+#####################
+
+variable "sangrenel_flag_auto_launch_test" {
+  description = "Boolean to begin stress test as soon as instance is created"
+  default = "on"
+}
+
+variable "sangrenel_flag_message_size" {
+  description = "Value for sangrenel's -message-size flag"
+  default = "800"
+}
+
+variable "sangrenel_flag_batch_size" {
+  description = "Value for sangrenel's -message-batch-size flag"
+  default = "500"
+}
+
+variable "sangrenel_flag_num_workers" {
+  description = "Value for sangrenel's -workers flag"
+  default = "10"
 }
 
 ##########################

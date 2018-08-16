@@ -151,10 +151,12 @@ resource "null_resource" "configure_kafka_elastic_ip" {
   }
 }
 
-##################
-# Sengrel instance
-##################
+#####################
+# Sangrenel instance
+#####################
 resource "aws_instance" "sangrenel" {
+  count = "${lookup(var.instance_counts, "sangrenel")}"
+
   # Should change
   ami = "${lookup(var.amis, "sangrenel")}"
   instance_type = "${lookup(var.aws_instance_types, "sangrenel")}"
@@ -170,12 +172,42 @@ resource "aws_instance" "sangrenel" {
   }
 
   tags {
-    Name        = "sangrenel"
+    Name        = "sangrenel-${count.index}"
     Owner       = "john-oneill"
     Environment = "dev"
     Terraform   = "true"
     Cluster     = "sangrenel"
-    Role        = "master"
+  }
+}
+
+resource "null_resource" "configure_sangrenel" {
+  # Wait until Kafka brokers are initialized
+  depends_on = ["null_resource.configure_kafka_elastic_ip"]
+
+  count = "${lookup(var.instance_counts, "sangrenel")}"
+
+  # Ensure that we can ssh in
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = "${file("${var.pem_file_path}")}"
+    host = "${element(aws_instance.sangrenel.*.public_ip, count.index)}"
+  }
+
+  # Copy configuration file over to instance
+  provisioner "file" {
+    source      = "${path.module}/../../remote_config_scripts/configure_and_run_sangrenel.sh"
+    destination = "/tmp/configure_and_run_sangrenel.sh"
+  }
+
+  # Take configuration file and run with params
+  # Use EIP count as proxy for Kafka broker instance count
+  # Use Zookeeper IDs for proper configuration
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/configure_and_run_sangrenel.sh",
+      "/tmp/configure_and_run_sangrenel.sh ${var.sangrenel_flag_auto_launch_test} ${join(",", aws_eip.kafka_elastic_ip.*.public_ip)} ${var.sangrenel_flag_message_size} ${var.sangrenel_flag_batch_size} ${var.sangrenel_flag_num_workers}"
+    ]
   }
 }
 
