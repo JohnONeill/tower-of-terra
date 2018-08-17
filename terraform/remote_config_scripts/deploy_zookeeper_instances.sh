@@ -24,11 +24,14 @@ for i in `seq $ZOOKEEPER_CLUSTER_COUNT`; do
   else
     CURRENT_DNS=$(echo $DNS_LIST | awk -F ',' '{print $'"$i"'}')
     cat ~/.ssh/id_rsa.pub | ssh -o "StrictHostKeyChecking no" -i ~/.ssh/${KEY_NAME} ubuntu@$CURRENT_DNS 'cat >> ~/.ssh/authorized_keys'
+    wait
     echo "TRYING DNS $CURRENT_DNS"
     ssh -v -oStrictHostKeyChecking=no ubuntu@$CURRENT_DNS << EOF
       sudo $ZOOKEEPER_HOME/bin/zkServer.sh start
 EOF
-    echo "Zookeeper started on $CURRENT_DNS"
     wait
+    echo "Zookeeper started on $CURRENT_DNS"
   fi
 done
+
+wait

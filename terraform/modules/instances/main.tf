@@ -157,7 +157,7 @@ resource "null_resource" "configure_kafka_elastic_ip" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/configure_and_run_kafka_broker.sh",
-      "/tmp/configure_and_run_kafka_broker.sh ${lookup(var.instance_counts, "kafka")} ${count.index} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path} ${element(aws_eip.kafka_elastic_ip.*.public_ip, count.index)}",
+      "/tmp/configure_and_run_kafka_broker.sh ${count.index} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path} ${element(aws_eip.kafka_elastic_ip.*.public_ip, count.index)}",
     ]
   }
 }
@@ -266,10 +266,10 @@ resource "null_resource" "test_instance_ip" {
   # Take configuration file and run with params
   # Use EIP count as proxy for Kafka broker instance count
   # Use Zookeeper IDs for proper configuration
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "chmod +x /tmp/configure_and_run_kafka_broker.sh",
-  #     "/tmp/configure_and_run_kafka_broker.sh 1 0 ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
-  #   ]
-  # }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/configure_and_run_kafka_broker.sh",
+      "/tmp/configure_and_run_kafka_broker.sh 0 ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
+    ]
+  }
 }

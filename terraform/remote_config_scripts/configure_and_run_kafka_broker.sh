@@ -1,10 +1,8 @@
 #!/bin/dash
-
-KAFKA_CLUSTER_COUNT=$1
-KAFKA_BROKER_ID=$(echo "$2+1" | bc)
-ZOOKEEPER_DNS_LIST=$3
-KAFKA_HOME="$4/kafka_2.12-1.1.0"
-KAFKA_BROKER_DNS=$5
+KAFKA_BROKER_ID=$(echo "$1+1" | bc)
+ZOOKEEPER_DNS_LIST=$2
+KAFKA_HOME="$3/kafka_2.12-1.1.0"
+KAFKA_BROKER_DNS=$4
 
 echo "Setting and adjusting Kafka broker configuration..."
 cd $KAFKA_HOME/config
@@ -32,4 +30,9 @@ cd ../bin
 echo "Starting Kafka broker..."
 sudo sed -i '1i export JMX_PORT=${JMX_PORT:-9999}' ./kafka-server-start.sh
 sudo nohup ./kafka-server-start.sh $SERVER_PROPERTIES_PATH &
+ps aux | grep kafka
+sleep 10
+ps aux | grep kafka
 echo "Kafka broker is up and running!"
+
+wait
