@@ -32,7 +32,7 @@ variable "aws_instance_types" {
 
 variable "sangrenel_flag_auto_launch_test" {
   description = "Boolean to begin stress test as soon as instance is created"
-  default = "on"
+  default = "off"
 }
 
 variable "sangrenel_flag_message_size" {
