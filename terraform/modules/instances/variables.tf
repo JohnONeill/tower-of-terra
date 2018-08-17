@@ -13,7 +13,7 @@ variable "instance_counts" {
   default = {
     zookeeper = 3,
     kafka = 3,
-    sangrenel = 1
+    sangrenel = 3
   }
 }
 

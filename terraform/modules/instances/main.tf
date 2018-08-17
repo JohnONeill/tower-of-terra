@@ -217,7 +217,8 @@ resource "null_resource" "configure_sangrenel" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/configure_and_run_sangrenel.sh",
-      "/tmp/configure_and_run_sangrenel.sh ${var.sangrenel_flag_auto_launch_test} ${join(",", aws_eip.kafka_elastic_ip.*.public_ip)} ${var.sangrenel_flag_message_size} ${var.sangrenel_flag_batch_size} ${var.sangrenel_flag_num_workers}"
+      "mv /tmp/configure_and_run_sangrenel.sh ~/configure_and_run_sangrenel.sh",
+      "~/configure_and_run_sangrenel.sh ${var.sangrenel_flag_auto_launch_test} ${join(",", aws_eip.kafka_elastic_ip.*.public_ip)} ${var.sangrenel_flag_message_size} ${var.sangrenel_flag_batch_size} ${var.sangrenel_flag_num_workers}"
     ]
   }
 }
