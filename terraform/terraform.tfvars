@@ -6,3 +6,6 @@ remote_download_path="/home/ubuntu/downloads"
 
 # Path of pem file, which holds private key for ssh
 pem_file_path="~/.ssh/john-oneill-IAM-keypair.pem"
+
+# Path for public key
+public_key_path="~/.ssh/id_rsa.pub"

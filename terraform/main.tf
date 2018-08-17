@@ -42,6 +42,7 @@ module "instances" {
   aws_instance_types = "${var.aws_instance_types}"
   open_security_group = "${module.security_group.open_security_group_id}"
   pem_file_path = "${var.pem_file_path}"
+  public_key_path = "${var.public_key_path}"
   public_subnet_id = "${module.subnet_network.public_subnet_id}"
   remote_download_path = "${var.remote_download_path}"
   sangrenel_flag_auto_launch_test = "${var.sangrenel_flag_auto_launch_test}"

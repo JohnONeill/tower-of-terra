@@ -25,6 +25,10 @@ variable "pem_file_path" {
   description = "Path of pem file"
 }
 
+variable "public_key_path" {
+  description = "Path of public key"
+}
+
 variable "public_subnet_id" {
   description = "The ID of the public subnet"
 }

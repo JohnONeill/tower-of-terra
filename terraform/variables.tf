@@ -61,3 +61,7 @@ variable "remote_download_path" {
 variable "pem_file_path" {
   description = "Path of pem file"
 }
+
+variable "public_key_path" {
+  default = ""
+}

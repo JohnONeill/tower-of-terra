@@ -1,6 +1,14 @@
 ######################
 # Zookeeper instances
 ######################
+resource "aws_key_pair" "mykeypair" {
+  key_name = "mykeypair"
+  public_key = "${file("${var.public_key_path}")}"
+  lifecycle {
+    ignore_changes = ["public_key"]
+  }
+}
+
 
 resource "aws_instance" "zookeeper" {
   count = "${lookup(var.instance_counts, "zookeeper")}"
@@ -70,6 +78,11 @@ resource "null_resource" "rolling_deploy_of_zookeeper_instances" {
     host = "${aws_eip.zookeeper_elastic_ip.0.public_ip}"
   }
 
+  provisioner "file" {
+    source = "${var.pem_file_path}"
+    destination = "/tmp/${aws_key_pair.mykeypair.key_name}"
+  }
+
   # Copy configuration file over to instance
   provisioner "file" {
     source      = "${path.module}/../../remote_config_scripts/deploy_zookeeper_instances.sh"
@@ -81,7 +94,7 @@ resource "null_resource" "rolling_deploy_of_zookeeper_instances" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/deploy_zookeeper_instances.sh",
-      "/tmp/deploy_zookeeper_instances.sh ${lookup(var.instance_counts, "zookeeper")} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
+      "/tmp/deploy_zookeeper_instances.sh ${aws_key_pair.mykeypair.key_name} ${lookup(var.instance_counts, "zookeeper")} ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
     ]
   }
 }
@@ -253,10 +266,10 @@ resource "null_resource" "test_instance_ip" {
   # Take configuration file and run with params
   # Use EIP count as proxy for Kafka broker instance count
   # Use Zookeeper IDs for proper configuration
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/configure_and_run_kafka_broker.sh",
-      "/tmp/configure_and_run_kafka_broker.sh 1 0 ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
-    ]
-  }
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "chmod +x /tmp/configure_and_run_kafka_broker.sh",
+  #     "/tmp/configure_and_run_kafka_broker.sh 1 0 ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
+  #   ]
+  # }
 }
