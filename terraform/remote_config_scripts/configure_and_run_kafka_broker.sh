@@ -30,4 +30,5 @@ echo "Starting Kafka broker..."
 sudo sed -i '1i export JMX_PORT=${JMX_PORT:-9999}' ./kafka-server-start.sh
 nohup sudo ./kafka-server-start.sh $SERVER_PROPERTIES_PATH &
 ps aux | grep kafka
+sleep 1
 echo "Kafka broker is up and running!"
