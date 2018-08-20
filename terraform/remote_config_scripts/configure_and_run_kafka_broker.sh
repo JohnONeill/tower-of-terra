@@ -24,15 +24,10 @@ sudo sed -i '31d' server.properties
 sudo sed -i '31i listeners=PLAINTEXT://0.0.0.0:9092' $SERVER_PROPERTIES_PATH
 sudo sed -i 's@#advertised.listeners=PLAINTEXT://your.host.name@advertised.listeners=PLAINTEXT://'"$KAFKA_BROKER_DNS"'@g' $SERVER_PROPERTIES_PATH
 
-
 cd ../bin
 
 echo "Starting Kafka broker..."
 sudo sed -i '1i export JMX_PORT=${JMX_PORT:-9999}' ./kafka-server-start.sh
-sudo nohup ./kafka-server-start.sh $SERVER_PROPERTIES_PATH &
-ps aux | grep kafka
-sleep 10
+nohup sudo ./kafka-server-start.sh $SERVER_PROPERTIES_PATH &
 ps aux | grep kafka
 echo "Kafka broker is up and running!"
-
-wait
