@@ -9,7 +9,6 @@ resource "aws_key_pair" "mykeypair" {
   }
 }
 
-
 resource "aws_instance" "zookeeper" {
   count = "${lookup(var.instance_counts, "zookeeper")}"
   ami = "${lookup(var.amis, "zookeeper")}"
@@ -111,6 +110,7 @@ resource "aws_instance" "kafka_broker" {
   vpc_security_group_ids = ["${var.open_security_group}"]
   subnet_id = "${var.public_subnet_id}"
   associate_public_ip_address = true
+  monitoring = true
 
   root_block_device {
     volume_size = 100
@@ -168,7 +168,6 @@ resource "null_resource" "configure_kafka_elastic_ip" {
 resource "aws_instance" "sangrenel" {
   count = "${lookup(var.instance_counts, "sangrenel")}"
 
-  # Should change
   ami = "${lookup(var.amis, "sangrenel")}"
   instance_type = "${lookup(var.aws_instance_types, "sangrenel")}"
   key_name = "john-oneill-IAM-keypair"
@@ -212,65 +211,11 @@ resource "null_resource" "configure_sangrenel" {
   }
 
   # Take configuration file and run with params
-  # Use EIP count as proxy for Kafka broker instance count
-  # Use Zookeeper IDs for proper configuration
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/configure_and_run_sangrenel.sh",
       "mv /tmp/configure_and_run_sangrenel.sh ~/configure_and_run_sangrenel.sh",
       "~/configure_and_run_sangrenel.sh ${var.sangrenel_flag_auto_launch_test} ${join(",", aws_eip.kafka_elastic_ip.*.public_ip)} ${var.sangrenel_flag_message_size} ${var.sangrenel_flag_batch_size} ${var.sangrenel_flag_num_workers}"
-    ]
-  }
-}
-
-##########################
-# Test instance
-##########################
-
-resource "aws_instance" "test" {
-  ami = "${lookup(var.amis, "kafka")}"
-  instance_type = "t2.small"
-  key_name = "john-oneill-IAM-keypair"
-
-  vpc_security_group_ids = ["${var.open_security_group}"]
-  subnet_id = "${var.public_subnet_id}"
-  associate_public_ip_address = true
-
-  root_block_device {
-    volume_size = 100
-    volume_type = "standard"
-  }
-
-  tags {
-    Name        = "test_server"
-    Owner       = "john-oneill"
-    Environment = "dev"
-    Terraform   = "true"
-  }
-}
-
-resource "null_resource" "test_instance_ip" {
-  # Ensure that we can ssh in
-  connection {
-    type = "ssh"
-    user = "ubuntu"
-    private_key = "${file("${var.pem_file_path}")}"
-    host = "${aws_instance.test.public_ip}"
-  }
-
-  # Copy configuration file over to instance
-  provisioner "file" {
-    source      = "${path.module}/../../remote_config_scripts/configure_and_run_kafka_broker.sh"
-    destination = "/tmp/configure_and_run_kafka_broker.sh"
-  }
-
-  # Take configuration file and run with params
-  # Use EIP count as proxy for Kafka broker instance count
-  # Use Zookeeper IDs for proper configuration
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/configure_and_run_kafka_broker.sh",
-      "/tmp/configure_and_run_kafka_broker.sh 0 ${join(",", aws_eip.zookeeper_elastic_ip.*.public_ip)} ${var.remote_download_path}",
     ]
   }
 }

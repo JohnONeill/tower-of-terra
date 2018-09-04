@@ -8,6 +8,11 @@ output "kafka_elastic_ips" {
   value = "${module.instances.kafka_broker_elastic_ips}"
 }
 
+output "sample_kafka_broker_instance_id" {
+  description = "Elastic IPs of Kafka broker instance(s)"
+  value = "${module.instances.sample_kafka_broker_instance_id}"
+}
+
 output "sangrenel_ips" {
   description = "IP of Sangrenel instance(s)"
   value = "${module.instances.sangrenel_ips}"

@@ -26,13 +26,32 @@ variable "aws_instance_types" {
   }
 }
 
+variable "instance_counts" {
+  description = "Count of each instance type"
+  type = "map"
+  default = {
+    zookeeper = 3,
+    kafka = 3,
+    sangrenel = 0
+  }
+}
+
+#################
+# Kafka settings
+#################
+
+variable "enable_kafka_detailed_monitor" {
+  description = "Enable detailed monitoring of Kafka server (only applies to first broker)"
+  default = "on"
+}
+
 #####################
 # Sangrenel settings
 #####################
 
 variable "sangrenel_flag_auto_launch_test" {
   description = "Boolean to begin stress test as soon as instance is created"
-  default = "off"
+  default = "on"
 }
 
 variable "sangrenel_flag_message_size" {
@@ -47,7 +66,7 @@ variable "sangrenel_flag_batch_size" {
 
 variable "sangrenel_flag_num_workers" {
   description = "Value for sangrenel's -workers flag"
-  default = "10"
+  default = "20"
 }
 
 ##########################

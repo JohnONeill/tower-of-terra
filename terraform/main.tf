@@ -40,11 +40,15 @@ module "instances" {
 
   amis = "${var.amis}"
   aws_instance_types = "${var.aws_instance_types}"
-  open_security_group = "${module.security_group.open_security_group_id}"
+  instance_counts = "${var.instance_counts}"
+
   pem_file_path = "${var.pem_file_path}"
   public_key_path = "${var.public_key_path}"
-  public_subnet_id = "${module.subnet_network.public_subnet_id}"
   remote_download_path = "${var.remote_download_path}"
+
+  open_security_group = "${module.security_group.open_security_group_id}"
+  public_subnet_id = "${module.subnet_network.public_subnet_id}"
+
   sangrenel_flag_auto_launch_test = "${var.sangrenel_flag_auto_launch_test}"
   sangrenel_flag_message_size = "${var.sangrenel_flag_message_size}"
   sangrenel_flag_batch_size = "${var.sangrenel_flag_batch_size}"

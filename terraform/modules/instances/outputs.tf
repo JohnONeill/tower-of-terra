@@ -8,12 +8,12 @@ output "kafka_broker_elastic_ips" {
   value = "${aws_eip.kafka_elastic_ip.*.public_ip}"
 }
 
+output "sample_kafka_broker_instance_id" {
+  description = "Instance ID of sample kafka broker"
+  value = "${aws_instance.kafka_broker.0.id}"
+}
+
 output "sangrenel_ips" {
   description = "IP of Sangrenel instance(s)"
   value = "${aws_instance.sangrenel.*.public_ip}"
-}
-
-output "test_instance_ip" {
-  description = "IP of test instance"
-  value = "${aws_instance.test.public_ip}"
 }

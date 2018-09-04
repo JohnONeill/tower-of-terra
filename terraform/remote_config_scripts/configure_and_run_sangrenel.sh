@@ -12,9 +12,11 @@ then
   KAFKA_BROKER_LIST=$(echo $KAFKA_BROKER_DNS_LIST | sed "s/,/:$KAFKA_BROKER_PORT,/g"):$KAFKA_BROKER_PORT
 
   # Run sangrenel!
+  sleep 30
   nohup ~/go/bin/sangrenel -topic stressed-out-topic -brokers $KAFKA_BROKER_LIST -message-size $SANGRENEL_FLAG_MESSAGE_SIZE -message-batch-size $SANGRENEL_FLAG_MESSAGE_BATCH_SIZE -workers $SANGRENEL_FLAG_NUM_WORKERS &
+
   echo "Running sangrenel test"
-  sleep 1
+  ps aux | grep sangrenel
 else
   echo "Not running sangrenel test"
 fi
