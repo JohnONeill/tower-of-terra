@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:a2c1d0e43bd3baaa071d1b9ed72c27d78169b2b269f71c105ac4ba34b1be4a39"
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   pruneopts = "UT"
-  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
-  version = "v1.1.0"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:e9c6ba1df4e7953669dd5c2b13f6ce239ce2a7e76c498504368969b3eec87821"
@@ -20,8 +20,8 @@
     "modules/terraform",
   ]
   pruneopts = "UT"
-  revision = "a3246fed2e3e40b345e13a745e435b36b17d0c16"
-  version = "v0.9.15"
+  revision = "d800338b3e88d65e5a434ec9a6ab1242270edda6"
+  version = "v0.10.0"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
@@ -45,12 +45,13 @@
   name = "golang.org/x/net"
   packages = ["context"]
   pruneopts = "UT"
-  revision = "c39426892332e1bb5ec0a434a079bf82f5d30c54"
+  revision = "8a410e7b638dca158bf9e766925842f6651ff828"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/gruntwork-io/terratest/modules/logger",
     "github.com/gruntwork-io/terratest/modules/terraform",
     "github.com/stretchr/testify/assert",
   ]
