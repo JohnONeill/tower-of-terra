@@ -1,76 +1,51 @@
-# ⚡ Tower of Terra ⚡
+# 🌀 Tower of Terra 🌀
 
-Stress Testing Kafka Scaling & Recovery with Terraform & Terratest
+Making Infrastructure Changes Safer With Terraform & Terratest
 
 ## Introduction
 
 Infrastructure as code (IaC) tools have unlocked numerous powerful benefits both technical and operational, such as automating provisioning and deployment processes or having the ability to easily track infrastructure changes over time within version control.
 
-However, writing and maintaining infrastructure code can still be as tricky as writing other code. As [Gruntwork](https://www.gruntwork.io/) co-founder Yevgeniy Brikman points out[¹](#references):
+However, writing and maintaining infrastructure code can still be as tricky as writing other code. As [Gruntwork](https://www.gruntwork.io/) co-founder Yevgeniy Brikman points out:
 
 > Most IaC tools are immature, modern architectures are complicated, and seemingly minor changes to infrastructure code sometimes cause severe bugs, such as wiping out a server, a database, or even an entire data center.
 >
 > *Here’s the hard truth: most teams are terrified of making changes to their infrastructure code.*
 
-It's easy to see why changing infrastructure code can be frightening. As mentioned above, one false setting around provisioning and/or configuration management can result in a catastrophe if it reaches production. Even if we manage to deploy our infrastructure without errors, there's still a lingering fear that the overall system design might have problems that have yet to be identified (e.g., scalability issues when ingesting larger data volumes). Whether you're a large financial institution dealing with consistency-critical OLTP pipelines or a fledgling startup just starting to build its MVP, your infrastructure is the foundation of your organization's tech stack, and assuring its reliability is critical.
+It's easy to see why changing infrastructure code can be frightening. As mentioned above, one false setting around provisioning and/or configuration management can result in a catastrophe if it reaches production. Even if we manage to deploy our infrastructure without errors, there's still a lingering fear that the overall system design might have problems that have yet to be identified (e.g., scalability issues when ingesting larger data volumes). Whether you're a large financial institution dealing with OLTP pipelines or a fledgling startup just starting to build its MVP, your infrastructure is the foundation of your organization's tech stack, and assuring its reliability is critical.
 
 This is where a tool like [Terratest](https://github.com/gruntwork-io/terratest) comes to the rescue. Terratest is a library that makes it easier to develop tests for infrastructure code, enabling us to run IaC tools against real servers and other infrastructure in a real environment such as AWS or Google Cloud.
 
-The goal of this project is to do a deep-dive into infrastructure testing with Terratest by developing a data pipeline and a suite of stress tests that simulate automatic scaling and recovery scenarios.
+The goal of this project is both an exercise in creating infrastructure (e.g., successfully configuring Zookeeper and Kafka brokers) as well as establishing the groundwork for automatically testing that infrastructure (and any potential changes to it) using Terratest.
 
+## Infrastructure & Tools
+
+![alt text](images/Infrastructure_Full.png "Tower of Terra")
+
+- **Terraform** for provisioning infrastructure.
+
+- **Packer** for creating base AMI's.
+
+- **Kakfa & Apache Zookeeper** clusters on **EC2**.
+
+- [**Sangrenel**](https://github.com/jamiealquiza/sangrenel) workers on **EC2**. Sangrenel is a stress-test library that serves as our producers.
+
+- **Terratest** library for writing & conducting automated infrastructure tests.
 
 ## Primary engineering challenges
-- Configuring Kafka to properly scale & recover
-- Establishing provisions and configurations to enable transient infrastructure — a requirement for transient infrastructure testing
-- Testing suite that facilitates various stress tests
+- The ability to deploy our entire infrastructure by simply running `terraform apply` — a vital step for our automated, transient infrastructure testing.
+- Configuring Zookeeper via Terraform. At its core, Terraform tries to parallelize infrastructure creation as much as possible; this can cause issues with Zookeeper, in which each server in the cluster needs to be sequentially instantiated in ascending order of id. To address this, I created a `null_resource` that waited on the Zookeeper instances to be created — when they were ready, the `null_resource` was responsible for initializing the Zookeeper instances in sequential order.
 
-## Data Pipeline
-
-- **S3** for storing [a large dataset](https://www.cms.gov/OpenPayments/Explore-the-Data/Dataset-Downloads.html). The focus here is to have a dataset that's large enough that it can be used to overwhelm our Kafka cluster. These datasets are managed by Centers for Medicare and Medicaid (CMS) and total roughly [2.2TB](https://www.resdac.org/resconnect/articles/195) (will likely take a subset of this).
-
-- **Node.js** scripts (our "producers") on **EC2** that read from **S3** and relay data to **Kafka**.
-
-- **Kakfa & Apache Zookeeper** on **EC2** for buffering data and serving to topic subscribers.
-
-- **Node.js** scripts (our "consumers") on **EC2** that store data in a database.
-
-- **Cassandra** for storing data from consumers.
-
-## DevOps Tools
-- **Terraform** for IaC. Still piecing together exactly how this is used for autoscaling, but it likely seems like it will involve [AWS Auto Scaling](https://aws.amazon.com/autoscaling/) which is free and lets us configure powerful settings like Auto Scaling groups (e.g., multiple EC2 instances that can be treated / scaled as a single atomic entity) and set target tracking scaling policies (e.g., always maintain x instances, if at 90% CPU add instance). The Auto Scaling group would encompass the Kafka boxes that we're flooding with messages.
-
-- **Terratest** library for writing & conducting tests.
-
-- **Docker** for **Node.js** scripts. [Also going to see if I can Dockerize Kafka stuff as well so I can avoid CM stuff altogether. It's "stateful", but as long as we can avoid destroying queued messages, we should be ok? The deploy strategy would be similar blue/green deploy instructions [described here](https://aws.amazon.com/blogs/big-data/best-practices-for-running-apache-kafka-on-aws/).
-
-- A monitoring tool [**Prometheus**, **Nagios**, etc]
-
-## Possible stretch goals
-- CI/CD pipeline that triggers Terratest testing suite when Terraform changes are committed and merged in.
-- Test suites of varying thoroughness and/or fidelity. Perhaps we have two test suites — one for production that reads the data from S3 and one for staging  that generates random data rather instead (to minimize cost and total runtime).
-- Using availability zones and integrating the gold standard of battle-testing: [Chaos Monkey](https://github.com/Netflix/chaosmonkey)
+## Future Improvements
+- **More sophisticated tests:** This project lays the foundation for doing more complicated tests against more complicated infrastructure changes. E.g., a test that not only validates that autoscaling groups and launch configurations are created correctly, but that they respond as expected (i.e. fall below specified utilization thresholds) to certain loads from our stress-test workers.
+- **Include test as part of CI/CD workflow**: It could be interesting to experiment with tests of varying fidelity if run from an operator's environment vs a staging environment — e.g., when running Terratest from our personal machines, our producers could be generate random bytes, but our staging environment could pull from actual data sources.
+- **Proper handling of Terraform State**: Terraform state is straightforward when there is only one operator making changes, but things give unruly as more operators contribute and apply their infrastructure changes. Related to the previous point, it would be an interesting exercise to integrate something like [Terragrunt](https://github.com/gruntwork-io/terragrunt) or [Atlantis](https://www.runatlantis.io/) to simulate a process that would more accurately reflect a real team's workflow.
 
 ---
 
-## References
-1. [Open sourcing Terratest: a swiss army knife for testing infrastructure code](https://blog.gruntwork.io/open-sourcing-terratest-a-swiss-army-knife-for-testing-infrastructure-code-5d883336fcd5)
+## Slides
+[Google Docs](https://docs.google.com/presentation/d/11J1HlO_GscNaYbUTNd59462zI9EwuFxsRMEliNSkl6Y/edit?usp=sharing)
 
 ---
 
 Insight DevOps Engineering Project (Class 2018C)
-
----
-
-## Getting started
-Work in progress. Currently using as a way to store notes that might be helpful when finally writing "Getting started" guide.
-
-- Setting environment vars for AWS (I should also add a placeholder in tfvars file)
-- Info about specifying bucket name
-- Create 'dev' terraform workspace: `terraform workspace new dev` (still need?)
-
-- Install terraform
-- Install packer
-- If building new images via Packer, remember to update terraform var with new AMI ID
-- Install go & dep for terratest (would ideally run terratest from testing server as part of CI/CD pipeline) (or instead: go get github.com/gruntwork-io/terratest/modules/terraform)
-- Place project within $GOPATH
-- Include details around IAM role permissions
