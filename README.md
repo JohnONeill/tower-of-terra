@@ -1,6 +1,6 @@
 # 🌀 Tower of Terra 🌀
 
-Making Infrastructure Changes Safer With Terraform & Terratest
+Making Infrastructure Changes Safer With Terraform & Terratest ([Slides](https://docs.google.com/presentation/d/11J1HlO_GscNaYbUTNd59462zI9EwuFxsRMEliNSkl6Y/edit?usp=sharing))
 
 ## Introduction
 
@@ -40,11 +40,6 @@ The goal of this project is both an exercise in creating infrastructure (e.g., s
 - **More sophisticated tests:** This project lays the foundation for doing more complicated tests against more complicated infrastructure changes. E.g., a test that not only validates that autoscaling groups and launch configurations are created correctly, but that they respond as expected (i.e. fall below specified utilization thresholds) to certain loads from our stress-test workers.
 - **Include test as part of CI/CD workflow**: It could be interesting to experiment with tests of varying fidelity if run from an operator's environment vs a staging environment — e.g., when running Terratest from our personal machines, our producers could be generate random bytes, but our staging environment could pull from actual data sources.
 - **Proper handling of Terraform State**: Terraform state is straightforward when there is only one operator making changes, but things give unruly as more operators contribute and apply their infrastructure changes. Related to the previous point, it would be an interesting exercise to integrate something like [Terragrunt](https://github.com/gruntwork-io/terragrunt) or [Atlantis](https://www.runatlantis.io/) to simulate a process that would more accurately reflect a real team's workflow.
-
----
-
-## Slides
-[Google Docs](https://docs.google.com/presentation/d/11J1HlO_GscNaYbUTNd59462zI9EwuFxsRMEliNSkl6Y/edit?usp=sharing)
 
 ---
 
